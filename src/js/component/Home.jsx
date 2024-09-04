@@ -13,6 +13,7 @@ const Home = () => {
 
     const [task, setTask] = useState(objectTask)
     const [todos, setTodos] = useState([])
+    const [users, setUsers] = useState("")
 
 
     const handleChange = (e) => {
@@ -68,6 +69,24 @@ const Home = () => {
 
 
     }
+    const getUser = async () => {
+
+        try {
+            let response = await fetch(`${URL_BASE}/users/leonardo`)
+            let data = await response.json()
+            setUsers(data.name)
+
+            console.log(`El valor de data es: ${users} `);
+
+
+        } catch (error) {
+            console.log(error);
+
+        }
+
+
+
+    }
 
     const getAllTask = async () => {
         try {
@@ -76,7 +95,6 @@ const Home = () => {
             if (response.status === 404) {
                 createUser()
                 getAllTask()
-
             } else {
                 setTodos(data.todos)
             }
@@ -118,22 +136,27 @@ const Home = () => {
 
     useEffect(() => {
         getAllTask()
+        getUser()
     }, [])
 
     return (
 
         <div className="container">
-            <div className="row">
-                <div className="col-12 md-7">
-                    <h1>TODO LIST APP</h1>
-                    <h4>{`(usuario)`}</h4>
+            <div className="row mt-4 ">
+                <div className="col-12 md-7 border  ">
+                    <h1 className="text-center">TODO LIST APP</h1>
+                    <h5
+                        className="bagde text-wrap text-bg-success text-center p-2"
+                        style={{ width: "100" }}
+                    >{`Usuario actual ${users}`}</h5>
                     <form
+                        className="border p-4 mb-4"
                         onSubmit={(e) => e.preventDefault()}
                     >
-                        <div className="col-sm-10">
+                        <div className="col-sm-10 w-100 text-center">
                             <input
 
-                                className="form-control"
+                                className="form-control "
                                 id="inputEmail3"
                                 name="label"
                                 placeholder="Add Task"
@@ -147,12 +170,12 @@ const Home = () => {
                     {
                         todos.map((item) => {
                             return (
-                                <div key={item.id} className="d-flex justify-content-between mt-4   border border-light-subtl">
-                                    <div className="">
+                                <div key={item.id} className="d-flex justify-content-between  mt-2   p-2  border border-light-subtl">
+                                    <div className="text-center">
                                         {item.label}
                                     </div>
                                     <button
-                                        className="btn btn-outline-danger"
+                                        className="btn btn-danger"
                                         onClick={() => deleteTask(item.id)}
                                     >x</button>
                                 </div>
@@ -160,7 +183,7 @@ const Home = () => {
                             )
                         })
                     }
-                    <button
+                    <button className="btn btn-danger mt-4"
                         onClick={() => handleDeleteAll()}
 
                     >Delete All</button>
